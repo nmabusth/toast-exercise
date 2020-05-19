@@ -17,8 +17,21 @@ export default function Content() {
   const classes = useStyles();
   const [likedFormSubs, setLikedFormSubs] = useState([]);
 
+  // Set polling for liked form submissions on mount
   useEffect(() => {
-    // On mount fetch liked submissions and update state
+    // get data right away
+    getFormSubs();
+
+    const submissionPolling = setInterval(() => {
+      getFormSubs();
+    }, 3000);
+
+    return function cleanup() {
+      clearInterval(submissionPolling);
+    };
+  }, []);
+
+  function getFormSubs() {
     fetchLikedFormSubmissions()
       .then((results) => {
         setLikedFormSubs(results.formSubmissions);
@@ -26,7 +39,7 @@ export default function Content() {
       .catch((error) => {
         console.log("Error fetching form submissions: " + error.message);
       });
-  }, []);
+  }
 
   return (
     <div className={classes.root}>
