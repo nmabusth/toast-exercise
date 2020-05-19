@@ -98,7 +98,7 @@ export default function Header() {
       </AppBar>
       <Snackbar
         open={openToast}
-        autoHideDuration={8000}
+        autoHideDuration={12000}
         onClose={handleClose}
         message={
           currentSubmission.data &&
