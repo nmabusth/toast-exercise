@@ -1,14 +1,16 @@
-import React from 'react';
+import React from "react";
 
-import { makeStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
+import { makeStyles } from "@material-ui/core/styles";
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
+import Typography from "@material-ui/core/Typography";
+import Button from "@material-ui/core/Button";
+import IconButton from "@material-ui/core/IconButton";
+import MenuIcon from "@material-ui/icons/Menu";
+import { saveFormSubmission } from "./service/mockServer";
 
-import { createMockFormSubmission } from './service/mockServer';
+import Chance from "chance";
+const chance = new Chance();
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -24,6 +26,29 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Header() {
   const classes = useStyles();
+
+  // handle form submit
+  function handleFormSubmit() {
+    //create mock form data
+    const formSubmission = {
+      id: chance.guid(),
+      data: {
+        email: chance.email(),
+        firstName: chance.first(),
+        lastName: chance.last(),
+        liked: false,
+      },
+    };
+
+    saveFormSubmission(formSubmission)
+      .then(() => {
+        console.log("Successfully saved");
+      })
+      .catch((error) => {
+        alert("Error occured saving form: " + error.message);
+      });
+  }
+
   return (
     <div className={classes.root}>
       <AppBar position="static">
@@ -43,7 +68,7 @@ export default function Header() {
             variant="contained"
             size="small"
             color="secondary"
-            onClick={() => createMockFormSubmission()}
+            onClick={() => handleFormSubmit()}
           >
             New Submission
           </Button>
