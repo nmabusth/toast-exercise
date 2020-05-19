@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
@@ -7,6 +7,8 @@ import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
+import Snackbar from "@material-ui/core/Snackbar";
+import CloseIcon from "@material-ui/icons/Close";
 import { saveFormSubmission } from "./service/mockServer";
 
 import Chance from "chance";
@@ -26,6 +28,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Header() {
   const classes = useStyles();
+  const [openToast, setOpenToast] = useState(false);
 
   // handle form submit
   function handleFormSubmit() {
@@ -43,10 +46,17 @@ export default function Header() {
     saveFormSubmission(formSubmission)
       .then(() => {
         console.log("Successfully saved");
+        // Testing toast
+        setOpenToast(true);
       })
       .catch((error) => {
         alert("Error occured saving form: " + error.message);
       });
+  }
+
+  // Close toast
+  function handleClose() {
+    setOpenToast(false);
   }
 
   return (
@@ -74,6 +84,24 @@ export default function Header() {
           </Button>
         </Toolbar>
       </AppBar>
+      <Snackbar
+        open={openToast}
+        autoHideDuration={8000}
+        onClose={handleClose}
+        message={"Submission"}
+        action={
+          <>
+            <IconButton
+              size="small"
+              aria-label="close"
+              color="inherit"
+              onClick={handleClose}
+            >
+              <CloseIcon />
+            </IconButton>
+          </>
+        }
+      />
     </div>
   );
 }
