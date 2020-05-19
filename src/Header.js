@@ -29,6 +29,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Header() {
   const classes = useStyles();
   const [openToast, setOpenToast] = useState(false);
+  const [currentSubmission, setCurrentSubmission] = useState([]);
 
   // handle form submit
   function handleFormSubmit() {
@@ -43,20 +44,31 @@ export default function Header() {
       },
     };
 
-    saveFormSubmission(formSubmission)
-      .then(() => {
-        console.log("Successfully saved");
-        // Testing toast
-        setOpenToast(true);
-      })
-      .catch((error) => {
-        alert("Error occured saving form: " + error.message);
-      });
+    // set current form data and display toast
+    setCurrentSubmission(formSubmission);
+    setOpenToast(true);
   }
 
-  // Close toast
+  // Close toast and clear current form
   function handleClose() {
     setOpenToast(false);
+    setCurrentSubmission([]);
+  }
+
+  // Save "liked" forms
+  function handleLike() {
+    saveFormSubmission({
+      ...currentSubmission,
+      data: { ...currentSubmission.data, liked: true },
+    })
+      .then(() => {
+        // close toast and clear form
+        setOpenToast(false);
+        setCurrentSubmission([]);
+      })
+      .catch((error) => {
+        alert("Error occured liking form: " + error.message);
+      });
   }
 
   return (
@@ -88,9 +100,17 @@ export default function Header() {
         open={openToast}
         autoHideDuration={8000}
         onClose={handleClose}
-        message={"Submission"}
+        message={
+          currentSubmission.data &&
+          `${currentSubmission.data.firstName} ${currentSubmission.data.lastName} 
+          ${currentSubmission.data.email}
+          `
+        }
         action={
           <>
+            <Button color="inherit" onClick={handleLike}>
+              Like
+            </Button>
             <IconButton
               size="small"
               aria-label="close"
