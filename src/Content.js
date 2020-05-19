@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
 import { fetchLikedFormSubmissions } from "./service/mockServer";
 
 const useStyles = makeStyles(() => ({
@@ -45,13 +47,18 @@ export default function Content() {
     <div className={classes.root}>
       <Typography variant="h4">Liked Form Submissions</Typography>
 
-      <ol>
+      <List>
         {likedFormSubs.map((submission) => (
-          <li key={submission.id}>
-            {submission.data.firstName + " " + submission.data.lastName}
-          </li>
+          <ListItem key={submission.id}>
+            <ListItemText
+              primary={
+                submission.data.firstName + " " + submission.data.lastName
+              }
+              secondary={submission.data.email}
+            />
+          </ListItem>
         ))}
-      </ol>
+      </List>
     </div>
   );
 }
